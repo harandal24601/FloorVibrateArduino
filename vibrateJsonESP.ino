@@ -15,11 +15,6 @@ int RX = 2;
 int TX = 3;
 SoftwareSerial esp8266(RX, TX);
 
-char ssid[] = "not your brother 2";
-char pass[] = "qhdks12##2";
-char webserverIP[] = "http://api.allow-noise-to-me.cf/";
-char webserberPort[] = "8080";
-
 void setup() {
   Serial.begin(9600);
   esp8266.begin(9600);
@@ -27,13 +22,13 @@ void setup() {
 
   sendData("AT+RST\r\n", TO*2, DEBUG); //reset module
   sendData("AT+CWMODE=1\r\n", TO, DEBUG); // Client mode
-  sendData("AT+CWJAP=\"not your brother 2\",\"qhdks12##2\"\r\n", TO*5, DEBUG); //사용할 공유기 설정
+  sendData("AT+CWJAP=\"<WiFi>\",\"<PassWord>\"\r\n", TO*5, DEBUG); //사용할 공유기 설정
   sendData("AT+CIPMUX=1\r\n", TO, DEBUG); //multiple connections 설정
-  sendData("AT+CIPSERVER=1,8000\r\n", TO, DEBUG); // 공유기와의 연결 포트 번호를 8080번으로 설정. default 포트는 333이다.
+  sendData("AT+CIPSERVER=1,<port_num>\r\n", TO, DEBUG); // 공유기와의 연결 포트 번호를 8080번으로 설정. default 포트는 333이다.
   sendData("AT+CIFSR\r\n", TO, DEBUG); // 부여받은 IP 번호 확인
 
   Serial.println("# Trying to connect to web server...");
-  while(sendData("AT+CIPSTART=1,\"TCP\",\"http://api.allow-noise-to-me.cf\"\r\n",TO*5,DEBUG)[54]=='E') {
+  while(sendData("AT+CIPSTART=1,\"TCP\",\"<server-address>\"\r\n",TO*5,DEBUG)[54]=='E') {
     Serial.println("# ReTrying to Connect Web Server After Close All Connection");
       sendData("AT+CIPCLOSE=5\r\n", TO, DEBUG); // 모든 연결 강제종료
       sendData("AT+CIPMUX=1\r\n", TO, DEBUG); // multiple connections 설정
